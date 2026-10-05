@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>판다인 광고 운영실</title>
+<style>
+:root{--bg:#F4F6F8;--fg:#5A6371;--ring:#DFE3E8;--accent:#4263EB}
+@media (prefers-color-scheme:dark){:root{--bg:#0E1115;--fg:#98A1AE;--ring:#29303A;--accent:#748FFC}}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.box{text-align:center;padding:0 16px;max-width:420px}
+.sp{width:30px;height:30px;margin:0 auto 14px;border:3px solid var(--ring);border-top-color:var(--accent);border-radius:50%;animation:r .8s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="box" id="box"><div class="sp"></div>광고 운영실을 여는 중…</div>
+<script>
+// 판다인 광고 운영실 입구 — https://ads.pandain.co.kr (GitHub Pages, 저장소 davidpandain/pandain-ads)
+//  원본: davidpandain/cafe24-meta-sync 의 console/ads/index.html. 이 파일은 거의 바뀌지 않는다.
+//  화면 코드는 운영실 서버(구글 Apps Script)가 공유드라이브의 검증된 화면 파일을 내려 주고, 로그인·데이터도 같은 서버가 처리한다.
+var API = "https://script.google.com/macros/s/AKfycbxN77b5Y1rzmnkr7O8IIM2KnXt5G0PSeVwhcimVZHKSnayv_PpRHGtcza-tuhqK8tSb/exec";
+function fail(e) {
+  document.getElementById("box").innerHTML = "<p>광고 운영실 서버에 연결하지 못했습니다.</p><p style=\"font-size:13px\">" +
+    String((e && e.message) || e).replace(/[<>&]/g, "") + "</p><p><a href=\"\">다시 시도</a></p>";
+}
+fetch(API, { method: "POST", body: JSON.stringify({ f: "ui" }) })
+  .then(function (r) { return r.json(); })
+  .then(function (j) {
+    if (!j.ok) throw new Error(j.err || "서버 오류");
+    document.open(); document.write(j.r); document.close();
+  })
+  .catch(fail);
+</script>
+</body>
+</html>
