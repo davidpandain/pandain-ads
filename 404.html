@@ -29,6 +29,11 @@ function fail(e) {
 //  속도(26-10-06): 받은 화면 코드를 이 브라우저에 보관해 다음부터는 바로 연다(서버 왕복 ~1.7초 절약).
 //  화면이 뜬 뒤 3초 뒤 새 화면 코드를 받아 바뀌었으면 보관만 바꾼다(다음에 열 때 적용). 주소 끝 ?fresh 는 보관 무시.
 //  /dashboard·/budget 같은 탭 주소는 GitHub Pages 가 404.html(이 파일과 같은 내용)로 연다 → 화면이 주소를 보고 그 탭을 연다.
+// 구글 일시 오류(JSON 대신 오류 화면)면 최대 2번 더 받기
+function getUi(n) {
+  return fetch(API, { method: "POST", body: JSON.stringify({ f: "ui" }) }).then(function (r) { return r.json(); })
+    .catch(function (e) { if (n > 1) return new Promise(function (ok) { setTimeout(ok, 1000); }).then(function () { return getUi(n - 1); }); throw e; });
+}
 function show(h) { document.open(); document.write(h); document.close(); }
 //  안전장치: 보관본으로 열 때 'pending' 표시 → 화면이 시작하면 'ok'. 다음에 열 때 아직 'pending' 이면(지난번 보관본이 시작도 못 함)
 //  보관본을 버리고 서버에서 새로 받는다. 보관본에 지금 서버 주소(API)가 없어도 버린다.
@@ -38,8 +43,7 @@ try {
   if (!cached || !/^<!doctype html>/i.test(cached) || cached.indexOf(API) < 0) { cached = null; localStorage.removeItem("ops_ui"); }
 } catch (e) { cached = null; }
 if (cached) { try { localStorage.setItem("ops_ui_boot", "pending"); } catch (e) { /* */ } show(cached); }
-else fetch(API, { method: "POST", body: JSON.stringify({ f: "ui" }) })
-  .then(function (r) { return r.json(); })
+else getUi(3)
   .then(function (j) {
     if (!j.ok) throw new Error(j.err || "서버 오류");
     try { localStorage.setItem("ops_ui", j.r); } catch (e) { try { localStorage.removeItem("ops_ui"); } catch (e2) { /* */ } }
