@@ -42,7 +42,11 @@ try {
   if (!/[?&]fresh\b/.test(location.search) && localStorage.getItem("ops_ui_boot") !== "pending") cached = localStorage.getItem("ops_ui");
   if (!cached || !/^<!doctype html>/i.test(cached) || cached.indexOf(API) < 0) { cached = null; localStorage.removeItem("ops_ui"); }
 } catch (e) { cached = null; }
-if (cached) { try { localStorage.setItem("ops_ui_boot", "pending"); } catch (e) { /* */ } show(cached); }
+//  보관본은 이 문서를 다 읽은 뒤에 바꿔 쓴다 — 읽는 도중 document.open 은 무시돼 화면이 '여는 중…' 아래에 덧붙는다(10-06 대표 화면).
+if (cached) {
+  try { localStorage.setItem("ops_ui_boot", "pending"); } catch (e) { /* */ }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { show(cached); }); else show(cached);
+}
 else getUi(3)
   .then(function (j) {
     if (!j.ok) throw new Error(j.err || "서버 오류");
