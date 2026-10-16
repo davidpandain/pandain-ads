@@ -8,6 +8,11 @@
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- 26-10-16 속도(S7): 미리 연결 — 운영실 서버(구글)·답이 오는 곳(googleusercontent)은 fetch(익명 연결) · 화면 꾸밈 파일(jsdelivr)은 CSS(일반)·글꼴(익명) 둘 다 -->
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <style>
 :root{--bg:#F4F6F8;--fg:#5A6371;--ring:#DFE3E8;--accent:#4263EB}
 @media (prefers-color-scheme:dark){:root{--bg:#0E1115;--fg:#98A1AE;--ring:#29303A;--accent:#748FFC}}
@@ -30,7 +35,7 @@ function fail(e) {
     String((e && e.message) || e).replace(/[<>&]/g, "") + "</p><p><a href=\"?fresh\">다시 시도</a></p>";
 }
 //  속도(26-10-06): 받은 화면 코드를 이 브라우저에 보관해 다음부터는 바로 연다(서버 왕복 ~1.7초 절약).
-//  화면이 뜬 뒤 3초 뒤 새 화면 코드를 받아 바뀌었으면 보관만 바꾼다(다음에 열 때 적용). 주소 끝 ?fresh 는 보관 무시.
+//  화면이 뜬 뒤 3초 뒤 새 화면 코드가 있는지 묻고(26-10-16: 버전만 — 화면 안 window.__UIV 와 서버 uiVer 비교) 바뀌었을 때만 받아 보관을 바꾼다(다음에 열 때 적용). 주소 끝 ?fresh 는 보관 무시.
 //  /dashboard·/budget 같은 탭 주소는 GitHub Pages 가 404.html(이 파일과 같은 내용)로 연다 → 화면이 주소를 보고 그 탭을 연다.
 // 구글 일시 오류(JSON 대신 오류 화면)면 최대 2번 더 받기
 function getUi(n) {
